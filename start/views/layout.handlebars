@@ -24,7 +24,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="shortcut icon" href="/favicon.ico" />
-  <title>Customer Order System</title>
+  <title>Order Dashboard</title>
 
   <!-- Material Design Lite -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -38,7 +38,10 @@
   <link rel="stylesheet" href="/styles.css">
   <script src="/script.js"></script>
 
-  <!-- TODO: Add Google Sign-in library -->
+  <!-- COMPLETED: Added Google Sign-in library -->
+  <meta name="google-signin-scope" content="https://www.googleapis.com/auth/spreadsheets">
+  <meta name="google-signin-client_id" content="491087114379-t8no2ao100t6i5qdcat18e7dc8clgnj9.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
 
 </head>
 <body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
@@ -46,10 +49,16 @@
     <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
       <div class="mdl-layout--large-screen-only mdl-layout__header-row"></div>
       <div class="mdl-layout__header-row">
-        <h3><a href="/">Customer Order System</a></h3>
+        <h3><a href="/">Order Dashboard</a></h3>
         <div class="mdl-layout-spacer"></div>
         <div id="spinner" class="mdl-spinner mdl-js-spinner"></div>
-        <!-- TODO: Add Google Sign-in button -->
+        <!-- COMPLETED: Added Google Sign-in button -->
+        <div id="profile" style="margin: 0 20px;">
+          <b class="name"></b>
+          <br/>
+          <i class="email"></i>
+        </div>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
       </div>
       <div class="mdl-layout--large-screen-only mdl-layout__header-row"></div>

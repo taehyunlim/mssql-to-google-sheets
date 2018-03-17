@@ -78,12 +78,49 @@ router.post('/upsert', function(req, res, next) {
   });
 });
 
-// TODO: Add route for creating spreadsheet.
+// COMPLETED: Added route for creating spreadsheet.
+router.get('/', function (req, res, next) {
+  var options = {
+    order: [['createdAt', 'DESC']]
+  };
+  Sequelize.Promise.all([
+    models.Order.findAll(options),
+    models.Spreadsheet.findAll(options)
+  ]).then(function (results) {
+    res.render('index', {
+      orders: results[0],
+      spreadsheets: results[1]
+    });
+  });
+});
 
 
 
-// TODO: Add route for syncing spreadsheet.
+// COMPLETED: Added route for syncing spreadsheet.
+var SheetsHelper = require('./sheets');
 
+router.post('/spreadsheets', function (req, res, next) {
+  var auth = req.get('Authorization');
+  if (!auth) {
+    return next(Error('Authorization required.'));
+  }
+  var accessToken = auth.split(' ')[1];
+  var helper = new SheetsHelper(accessToken);
+  var title = 'Orders (' + new Date().toLocaleTimeString() + ')';
+  helper.createSpreadsheet(title, function (err, spreadsheet) {
+    if (err) {
+      return next(err);
+    }
+    var model = {
+      id: spreadsheet.spreadsheetId,
+      sheetId: spreadsheet.sheets[0].properties.sheetId,
+      name: spreadsheet.properties.title
+    };
+    models.Spreadsheet.create(model).then(function () {
+      return res.json(model);
+    });
+  });
+});
 
 
 module.exports = router;
