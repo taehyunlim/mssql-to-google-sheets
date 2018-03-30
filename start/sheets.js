@@ -1,5 +1,5 @@
 var {google} = require('googleapis');
-var {OAuthClient} = require('google-auth-library');
+var {OAuth2Client} = require('google-auth-library');
 var util = require('util');
 
 var SheetsHelper = function (accessToken) {

@@ -24,20 +24,23 @@ var router = express.Router();
 var models = require('./models');
 var Sequelize = require('sequelize');
 
-// TODO: Show spreadsheets on the main page.
-router.get('/', function(req, res, next) {
+// COMPLETED: Added route for creating spreadsheet.
+router.get('/', function (req, res, next) {
   var options = {
     order: [['createdAt', 'DESC']]
   };
-  models.Order.findAll(options)
-  .then(function(orders) {
+  Sequelize.Promise.all([
+    models.Order.findAll(options),
+    models.Spreadsheet.findAll(options)
+  ]).then(function (results) {
     res.render('index', {
-      orders: orders
+      orders: results[0],
+      spreadsheets: results[1]
     });
-  }, function(err) {
-    next(err);
   });
 });
+
+
 
 router.get('/create', function(req, res, next) {
   res.render('upsert');
@@ -78,24 +81,6 @@ router.post('/upsert', function(req, res, next) {
   });
 });
 
-// COMPLETED: Added route for creating spreadsheet.
-router.get('/', function (req, res, next) {
-  var options = {
-    order: [['createdAt', 'DESC']]
-  };
-  Sequelize.Promise.all([
-    models.Order.findAll(options),
-    models.Spreadsheet.findAll(options)
-  ]).then(function (results) {
-    res.render('index', {
-      orders: results[0],
-      spreadsheets: results[1]
-    });
-  });
-});
-
-
-
 // COMPLETED: Added route for syncing spreadsheet.
 var SheetsHelper = require('./sheets');
 
@@ -112,9 +97,9 @@ router.post('/spreadsheets', function (req, res, next) {
       return next(err);
     }
     var model = {
-      id: spreadsheet.spreadsheetId,
-      sheetId: spreadsheet.sheets[0].properties.sheetId,
-      name: spreadsheet.properties.title
+      id: spreadsheet.data.spreadsheetId,
+      sheetId: spreadsheet.data.sheets[0].properties.sheetId,
+      name: spreadsheet.data.properties.title
     };
     models.Spreadsheet.create(model).then(function () {
       return res.json(model);
