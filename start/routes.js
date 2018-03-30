@@ -130,5 +130,4 @@ router.post('/spreadsheets/:id/sync', (req, res, next) => {
 
 })
 
-
 module.exports = router;
