@@ -97,9 +97,9 @@ router.post('/spreadsheets', function (req, res, next) {
       return next(err);
     }
     var model = {
-      id: spreadsheet.data.spreadsheetId,
-      sheetId: spreadsheet.data.sheets[0].properties.sheetId,
-      name: spreadsheet.data.properties.title
+      id: spreadsheet.spreadsheetId,
+      sheetId: spreadsheet.sheets[0].properties.sheetId,
+      name: spreadsheet.properties.title
     };
     models.Spreadsheet.create(model).then(function () {
       return res.json(model);

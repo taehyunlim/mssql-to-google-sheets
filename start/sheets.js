@@ -32,12 +32,14 @@ SheetsHelper.prototype.createSpreadsheet = function(title, callback) {
       ]
     }
   };
-  self.service.spreadsheets.create(request, function(err, spreadsheet) {
+  self.service.spreadsheets.create(request, function(err, response) {
     if (err) {
       return callback(err);
     }
+    var spreadsheet = response.data;
     // TODO: Add header rows.
     return callback(null, spreadsheet);
+    // const dataSheetId = spreadsheet.sheets[0].properties
   });
 };
 
