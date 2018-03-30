@@ -40,8 +40,6 @@ router.get('/', function (req, res, next) {
   });
 });
 
-
-
 router.get('/create', function(req, res, next) {
   res.render('upsert');
 });
@@ -106,6 +104,31 @@ router.post('/spreadsheets', function (req, res, next) {
     });
   });
 });
+
+// New route to kick off a sync
+router.post('/spreadsheets/:id/sync', (req, res, next) => {
+  const auth = req.get('Authorization');
+  if (!auth) {
+    return next(Error('Authorization required.'));
+  }
+  const accessToken = auth.split(' ')[1];
+  const helper = new SheetsHelper(accessToken);
+  Sequelize.Promise.all([
+    models.Spreadsheet.findById(req.params.id),
+    models.Order.findAll()
+  ]).then(results => {
+    const spreadsheet = results[0];
+    const orders = results[1];
+    helper.sync(spreadsheet.id, spreadsheet.sheetId, orders, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.json(orders.length);
+    })
+  })
+
+
+})
 
 
 module.exports = router;
